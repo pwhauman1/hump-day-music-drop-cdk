@@ -1,0 +1,23 @@
+{
+  "name": "hump-day-music-drop-cdk",
+  "version": "1.0.0",
+  "description": "This Project will maintain some of the AWS infrastructure for Hump Day Music Drop",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pwhauman1/hump-day-music-drop-cdk.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pwhauman1/hump-day-music-drop-cdk/issues"
+  },
+  "homepage": "https://github.com/pwhauman1/hump-day-music-drop-cdk#readme",
+  "devDependencies": {
+    "typescript": "^4.5.5"
+  }
+}
