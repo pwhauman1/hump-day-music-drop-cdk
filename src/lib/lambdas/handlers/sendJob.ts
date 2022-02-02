@@ -9,7 +9,7 @@
 
 // export default sendJobHandler;
 
-export const handler = async (request: any, context: any) => {
+export const sendJobHandler = async (request: any, context: any) => {
     return {
         statusCode: 200,
         body: {
