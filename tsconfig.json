@@ -5,7 +5,7 @@
     "lib": [
       "es2018"
     ],
-    "declaration": true,
+    "declaration": false,
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -21,10 +21,14 @@
     "strictPropertyInitialization": false,
     "typeRoots": [
       "./node_modules/@types"
-    ]
+    ],
+    "outDir": "./lib",
+    "rootDir": "./src"
   },
   "exclude": [
     "node_modules",
-    "cdk.out"
+    "src/testout",
+    "test",
+    "build"
   ]
 }
