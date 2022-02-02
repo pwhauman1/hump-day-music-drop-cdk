@@ -9,5 +9,4 @@ node_modules
 cdk.out
 
 # build artifacts
-lib/
-!src/lib
+./lib
