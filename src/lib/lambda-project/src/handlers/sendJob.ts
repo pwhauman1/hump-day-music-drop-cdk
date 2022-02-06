@@ -9,11 +9,14 @@
 
 // export default sendJobHandler;
 
+import * as path from 'path';
+
 export const sendJobHandler = async (request: any, context: any) => {
+    const str = path.join('will', 'this', 'work');
     return {
         statusCode: 200,
         body: {
-            message: 'Oh hoy lads',
+            message: str,
         },
     };
 };

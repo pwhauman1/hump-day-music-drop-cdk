@@ -10,7 +10,7 @@ export class HumpDayMusicDropCdkStack extends Stack {
 
     const sendJobLambda = new lambda.Function(this, SENDER_JOB_LAMBDA_NAME, {
       runtime: lambda.Runtime.NODEJS_12_X,
-      code: lambda.Code.fromAsset(path.join(__dirname, './lambdas')),
+      code: lambda.Code.fromAsset(path.join(__dirname, './lambda-project')),
       handler: 'index.sendJobHandler',
     });
   }

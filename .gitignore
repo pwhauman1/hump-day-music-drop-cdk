@@ -3,6 +3,7 @@
 !index.js
 *.d.ts
 node_modules
+.vscode
 
 # CDK asset staging directory
 .cdk.staging
@@ -10,3 +11,4 @@ cdk.out
 
 # build artifacts
 build
+dist
