@@ -1,23 +1,29 @@
-// import { Handler } from "aws-cdk-lib/aws-lambda";
+import { Handler } from "aws-cdk-lib/aws-lambda";
+import DDBClient from '../modules/DDBClient';
+import { getDateKey } from '../modules/Utils';
 
-// const sendJobHandler: Handler = async (event: any) => {
-//     const msg = 'Hello World! I am deployed locally!';
-//     console.log(msg);
-//     console.log('Event: ', event);
-//     return msg;
-// }
-
-// export default sendJobHandler;
-
-import * as path from 'path';
-
-export const sendJobHandler = async (request: any, context: any) => {
-    const str = path.join('will', 'this', 'work');
-    return {
+export const sendJobHandler: Handler = async (event: any) => {
+    const dynamoDbClient = DDBClient.getDDBClient();
+    const recipients: string[] = await dynamoDbClient.getAllRecipients();
+    const dateKey: number = getDateKey();
+    // TODO, if none are available, get backup
+    const drop = await dynamoDbClient.getDrop(dateKey);
+    if (!drop) {
+        const response = {
+            statusCode: 200,
+            body: 'No Drop to send. Skipping!',
+            recipients,
+            drop,
+            dateKey,
+        }
+        return response;
+    }
+    const response = {
         statusCode: 200,
-        body: {
-            message: str,
-        },
-    };
-};
+        recipients,
+        drop,
+        dateKey,
+    }
+    return response;
+}
 
