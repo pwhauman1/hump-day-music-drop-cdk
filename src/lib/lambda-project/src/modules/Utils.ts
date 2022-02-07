@@ -1,3 +1,5 @@
+import { hdmdWelcomeStrings } from "../constants";
+
 export const getDateKey = (): number => {
     // now is in UTC time since Lambda's don't have a timezone
     const now = new Date();
@@ -8,4 +10,9 @@ export const getDateKey = (): number => {
     dateKey += month <= 9 ? '0' + month : '' + month;
     dateKey += day <= 9 ? '0' + day : '' + day;
     return parseInt(dateKey);
+}
+
+export const getRandomWelcome = (): string => {
+    const length = hdmdWelcomeStrings.length;
+    return hdmdWelcomeStrings[Math.floor(Math.random() * length)];
 }

@@ -2,26 +2,31 @@
     "name": "hump-day-music-drop-cdk",
     "version": "0.1.0",
     "bin": {
-        "hump-day-music-drop-cdk": "bin/hump-day-music-drop-cdk.js"
+        "hump-day-music-drop-cdk": "bin/hump-day-music-drop-cdk.js",
+        "test-hw": "bin/test-hw.js"
     },
     "scripts": {
-        "build": "tsc",
+        "build": "tsc && npm run supplimental-copy",
         "watch": "tsc -w",
         "test": "jest",
-        "cdk": "cdk"
+        "cdk": "cdk",
+        "supplimental-copy": "ts-node ./src/bin/supplimental-copy.ts"
     },
     "devDependencies": {
         "@types/jest": "^26.0.10",
-        "@types/node": "10.17.27",
+        "@types/node": "^14.14.7",
         "aws-cdk": "2.10.0",
         "jest": "^26.4.2",
         "ts-jest": "^26.2.0",
-        "ts-node": "^9.0.0",
+        "ts-node": "^9.1.1",
         "typescript": "~3.9.7"
     },
     "dependencies": {
-        "aws-cdk-lib": "2.10.0",
+        "@types/fs-extra": "^9.0.13",
+        "aws-cdk-lib": "^2.10.0",
+        "bandersnatch": "^1.9.0",
         "constructs": "^10.0.0",
+        "fs-extra": "^10.0.0",
         "path": "^0.12.7",
         "source-map-support": "^0.5.16"
     }

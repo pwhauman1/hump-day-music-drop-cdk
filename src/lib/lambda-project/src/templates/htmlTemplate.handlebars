@@ -1,0 +1,35 @@
+<body>
+
+    <h1 class="title">{{hdmdWelcome}}</h1>
+
+    <div class="albumCover">
+        <img src="{{imageUrl}}">
+    </div>
+
+    <div class="albumTitle">
+        <p><b>{{albumName}}</b> by <b>{{artist}}</b></p>
+    </div>
+
+    {{#if desc}}
+    <div class="albumDescription">
+        <p>{{desc}}</p>
+    </div>
+    {{/if}}
+
+    {{#if favoriteSong}}
+    <div class="favoriteSong">
+        <p><b>Favorite Song</b>: {{favoriteSong}}</p>
+    </div>
+    {{/if}}
+
+    {{#if favoriteLyric}}
+    <div class="favoriteLyric">
+        <p><b>Favorite Lyric</b>: <i>"{{favoriteLyric}}"</i></p>
+    </div>
+    {{/if}}
+
+    <div class="spotifyLink">
+        <a href='{{spotifyUrl}}'>Open in spotify</a>
+    </div>
+
+</body>

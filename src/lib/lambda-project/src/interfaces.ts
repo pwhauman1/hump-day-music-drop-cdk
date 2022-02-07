@@ -9,3 +9,7 @@ export interface IDrop {
     desc?: string,
     favoriteLyric?: string,
 }
+
+export interface IDropHTML extends IDrop {
+    hdmdWelcome: string,
+}
