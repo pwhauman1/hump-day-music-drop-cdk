@@ -4,6 +4,7 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as ddb from 'aws-cdk-lib/aws-dynamodb';
 import * as path from 'path';
 import { DROPS_TABLE, RECIPIENTS_TABLE, SENDER_JOB_LAMBDA_NAME } from '../constants';
+import * as iam from 'aws-cdk-lib/aws-iam';
 
 export class HumpDayMusicDropCdkStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -35,6 +36,16 @@ export class HumpDayMusicDropCdkStack extends Stack {
       code: lambda.Code.fromAsset(path.join(__dirname, './lambda-project')),
       handler: 'index.sendJobHandler',
     });
+
+    const sendEmailPermissions = new iam.Policy(this, 'SendEmailPermissions', {
+      statements: [new iam.PolicyStatement({
+        actions: ['ses:SendEmail'],
+        resources: ['*']
+      })]
+    });
+
+    if (!sendJobLambda.role) throw new Error('Send Job Lambda does not have a role');
+    sendJobLambda.role.attachInlinePolicy(sendEmailPermissions)
 
     recipientsTable.grantReadData(sendJobLambda);
     dropsTable.grantReadData(sendJobLambda);

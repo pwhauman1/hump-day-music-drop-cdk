@@ -16,3 +16,13 @@ export const getRandomWelcome = (): string => {
     const length = hdmdWelcomeStrings.length;
     return hdmdWelcomeStrings[Math.floor(Math.random() * length)];
 }
+
+export const paginate = (arr: any[], split: number) => {
+    if(arr.length == null) throw new Error(`Cannot Paginate something that isn\'t an Array\nGot: ${arr}`);
+    const paginatedArr = [];
+    let i = 0;
+    while (i < arr.length) {
+      paginatedArr.push(arr.slice(i, i+=split));
+    }
+    return paginatedArr.filter(a => a.length > 0);
+  }
