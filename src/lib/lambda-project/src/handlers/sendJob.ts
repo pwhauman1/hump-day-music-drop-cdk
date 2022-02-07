@@ -3,7 +3,7 @@ import DDBClient from '../modules/DDBClient';
 import { EmailComposer } from "../modules/EmailComposer";
 import { getDateKey } from '../modules/Utils';
 
-export const sendJobHandler: Handler = async (event: any, context: any) => {
+export const sendJob: Handler = async (event: any, context: any) => {
     const dynamoDbClient = DDBClient.getDDBClient();
     const recipients: string[] = await dynamoDbClient.getAllRecipients();
     const dateKey: number = getDateKey();

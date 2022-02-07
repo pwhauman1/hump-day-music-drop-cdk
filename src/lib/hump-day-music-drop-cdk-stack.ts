@@ -39,7 +39,7 @@ export class HumpDayMusicDropCdkStack extends Stack {
     const sendJobLambda = new lambda.Function(this, SENDER_JOB_LAMBDA_NAME, {
       runtime: lambda.Runtime.NODEJS_12_X,
       code: lambda.Code.fromAsset(path.join(__dirname, './lambda-project')),
-      handler: 'index.sendJobHandler',
+      handler: 'index.sendJob',
     });
 
     const sendEmailPermissions = new iam.Policy(this, 'SendEmailPermissions', {
@@ -63,5 +63,54 @@ export class HumpDayMusicDropCdkStack extends Stack {
       }),
       targets: [new LambdaFunction(sendJobLambda)]
     });
+
+    // Lambda for our Restful service
+    const getAllRecipientsLambda = new lambda.Function(this, 'HDMDGetAllRecipientsLambda', {
+      runtime: lambda.Runtime.NODEJS_12_X,
+      code: lambda.Code.fromAsset(path.join(__dirname, './lambda-project')),
+      handler: 'index.getAllRecipients',
+    });
+    recipientsTable.grantReadData(getAllRecipientsLambda);
+
+    // Lambda for our Restful service
+    const addDropLambda = new lambda.Function(this, 'HDMDAddDropLambda', {
+      runtime: lambda.Runtime.NODEJS_12_X,
+      code: lambda.Code.fromAsset(path.join(__dirname, './lambda-project')),
+      handler: 'index.addDrop',
+    });
+    dropsTable.grantWriteData(addDropLambda);
+
+    // Lambda for our Restful service
+    const deleteDropLambda = new lambda.Function(this, 'HDMDDeleteDropLambda', {
+      runtime: lambda.Runtime.NODEJS_12_X,
+      code: lambda.Code.fromAsset(path.join(__dirname, './lambda-project')),
+      handler: 'index.deleteDrop',
+    });
+    dropsTable.grantWriteData(deleteDropLambda);
+
+    // Lambda for our Restful service
+    const getDropsForMonthLambda = new lambda.Function(this, 'HDMDGetDropsForMonthLambda', {
+      runtime: lambda.Runtime.NODEJS_12_X,
+      code: lambda.Code.fromAsset(path.join(__dirname, './lambda-project')),
+      handler: 'index.getDropsForMonth',
+    });
+    dropsTable.grantReadData(getDropsForMonthLambda);
+
+    // Lambda for our Restful service
+    const subscribeLambda = new lambda.Function(this, 'HDMDSubscribeLambda', {
+      runtime: lambda.Runtime.NODEJS_12_X,
+      code: lambda.Code.fromAsset(path.join(__dirname, './lambda-project')),
+      handler: 'index.subscribe',
+    });
+    recipientsTable.grantWriteData(subscribeLambda);
+
+    // Lambda for our Restful service
+    const unsubscribeLambda = new lambda.Function(this, 'HDMDUnsubscribeLambda', {
+      runtime: lambda.Runtime.NODEJS_12_X,
+      code: lambda.Code.fromAsset(path.join(__dirname, './lambda-project')),
+      handler: 'index.unsubscribe',
+    });
+    recipientsTable.grantWriteData(unsubscribeLambda);
+
   }
 }

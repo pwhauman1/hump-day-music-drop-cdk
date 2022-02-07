@@ -60,4 +60,59 @@ export default class DDBClient {
         const drop = queryResults.Items[0];
         return (drop as IDrop | undefined);
     }
+
+    /**
+     * 
+     * @param lowerBound The lower bound of the drops we want inclusive
+     * @param upperBound The upper bound of the drops we want includsive
+     * @returns The drops in the specified range. If there are none, then return []
+     */
+     public getDropsForRange = async (lowerBound: number, upperBound: number): Promise<IDrop[]> => {
+        const params = {
+            TableName: DROPS_TABLE,
+            ExpressionAttributeValues: {
+                ':lowerBound': lowerBound,
+                ':upperBound': upperBound,
+            },
+            FilterExpression: "sendDateKey between :lowerBound and :upperBound"
+        }
+        const queryResults = await this.dynamo.scan(params).promise();
+        return (queryResults.Items as IDrop[]);
+    }
+
+    public addItemToTable = async (item: any, table: string): Promise<boolean> => {
+        const params = {
+            TableName: table,
+            Item: item,
+        }
+        try {
+            console.log(`Putting Item in table`);
+            await this.dynamo.put(params).promise();
+            console.log(`Successfully put item.`);
+            return true;
+        } catch (error) {
+            console.error(`Failed to put ${JSON.stringify(item)} into ${table}`);
+            console.error(`Error message: ${error.message}`);
+            console.error(`Error as string: ${error.toString()}`);
+            return false;
+        }
+    }
+
+    public removeItemFromTable = async (key: any, table: string): Promise<boolean> => {
+        const params = {
+            TableName: table,
+            Key: key,
+        }
+        try {
+            console.log(`Deleting Item in table`);
+            await this.dynamo.delete(params).promise();
+            console.log(`Successfully deleted the item.`);
+            return true;
+        } catch (error) {
+            console.error(`Failed to delete ${JSON.stringify(key)} from ${table}`);
+            console.error(`Error message: ${error.message}`);
+            console.error(`Error as string: ${error.toString()}`);
+            return false;
+        }
+    }
 }
