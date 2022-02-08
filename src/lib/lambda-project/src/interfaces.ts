@@ -13,3 +13,22 @@ export interface IDrop {
 export interface IDropHTML extends IDrop {
     hdmdWelcome: string,
 }
+
+export interface ILambdaResponseContent {
+    infoMessage: string,
+    [props: string]: any,
+}
+
+export interface ILambdaResponseBody {
+    content: ILambdaResponseContent,
+}
+
+export interface ILambdaOutputFormatForProxy {
+    isBase64Encoded?: boolean,
+    statusCode: number,
+    headers?: string[],
+    multiValueHeaders?: {
+        [mvh: string]: string[]
+    },
+    body: String
+}

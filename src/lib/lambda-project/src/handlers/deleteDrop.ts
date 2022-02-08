@@ -1,11 +1,13 @@
 import { Handler } from "aws-cdk-lib/aws-lambda";
 import DDBClient from '../modules/DDBClient';
 import { DROPS_TABLE } from '../constants';
+import { makeLambdaBaseResponse } from "../modules/Utils";
 
 export const deleteDrop: Handler = async (event: any, context: any) => {
-    const sendDateKey = event?.input?.body?.sendDateKey;
-    const albumId = event?.input?.body?.albumId;
-    if(!sendDateKey || typeof sendDateKey !== 'number') {
+    const body = JSON.parse(event.body);
+    const sendDateKey = parseInt(body.sendDateKey);
+    const albumId = body.albumId;
+    if(sendDateKey === undefined || sendDateKey === null || typeof sendDateKey !== 'number') {
         throw new Error(`sendDateKey parameter not a number! Got: ${sendDateKey}`);
     }
     if(!albumId || typeof albumId !== 'string') {
@@ -19,17 +21,10 @@ export const deleteDrop: Handler = async (event: any, context: any) => {
     }
     const didDelete: boolean = await dynamoDbClient.removeItemFromTable(key, DROPS_TABLE);
     if (didDelete) {
-        const response = {
-            status: 200,
-            message: `Successfully deleted album ${albumId} with sendDateKey ${sendDateKey}`,
-        };
-        return response;
+        const infoMessage = `Successfully deleted album ${albumId} with sendDateKey ${sendDateKey}`;
+        return makeLambdaBaseResponse({infoMessage});
     } else {
-        const response = {
-            status: 400,
-            message: `Failed to delete album ${albumId} with sendDateKey ${sendDateKey}. Failed to delete item from the database.`,
-        }
-        return response;
+        throw new Error(`Failed to delete album ${albumId} with sendDateKey ${sendDateKey}. Failed to delete item from the database.`);
     }
 }
 

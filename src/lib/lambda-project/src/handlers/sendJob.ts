@@ -2,6 +2,7 @@ import { Handler } from "aws-cdk-lib/aws-lambda";
 import DDBClient from '../modules/DDBClient';
 import { EmailComposer } from "../modules/EmailComposer";
 import { getDateKey } from '../modules/Utils';
+import { makeLambdaBaseResponse } from "../modules/Utils";
 
 export const sendJob: Handler = async (event: any, context: any) => {
     const dynamoDbClient = DDBClient.getDDBClient();
@@ -11,14 +12,8 @@ export const sendJob: Handler = async (event: any, context: any) => {
     const drop = await dynamoDbClient.getDrop(dateKey);
     const emailComposer = EmailComposer.getEmailComposer();
     if (!drop) {
-        const response = {
-            statusCode: 200,
-            body: 'No Drop to send. Skipping!',
-            recipients,
-            drop,
-            dateKey,
-        }
-        return response;
+        const infoMessage = 'No drop to send. Skipping!';
+        return makeLambdaBaseResponse({ infoMessage });
     }
     const html = emailComposer.getHTML(drop);
     try {
@@ -29,10 +24,7 @@ export const sendJob: Handler = async (event: any, context: any) => {
         console.error('Uh Oh, failed to send emails');
         throw e;
     }
-    const response = {
-        code: 200,
-        msg: 'Successfully Sent Emails'
-    }
-    return response;
+    const infoMessage = 'Successfully Sent Emails';
+    return makeLambdaBaseResponse({ infoMessage });
 }
 

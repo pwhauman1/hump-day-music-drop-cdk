@@ -7,6 +7,7 @@ import { DROPS_TABLE, RECIPIENTS_TABLE, SENDER_JOB_LAMBDA_NAME } from '../consta
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
+import { RestApi, LambdaIntegration, LambdaIntegrationOptions} from 'aws-cdk-lib/aws-apigateway';
 
 export class HumpDayMusicDropCdkStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -64,6 +65,16 @@ export class HumpDayMusicDropCdkStack extends Stack {
       targets: [new LambdaFunction(sendJobLambda)]
     });
 
+    // API gateway and resources we attach our methods to
+    const api = new RestApi(this, 'HDMD-api');
+    const recipientsApiResource = api.root.addResource('recipients');
+    const dropsApiResource = api.root.addResource('drops');
+
+    const lambdaIntegOptions: LambdaIntegrationOptions = {
+      allowTestInvoke: true,
+      proxy: true,
+    }
+
     // Lambda for our Restful service
     const getAllRecipientsLambda = new lambda.Function(this, 'HDMDGetAllRecipientsLambda', {
       runtime: lambda.Runtime.NODEJS_12_X,
@@ -71,6 +82,7 @@ export class HumpDayMusicDropCdkStack extends Stack {
       handler: 'index.getAllRecipients',
     });
     recipientsTable.grantReadData(getAllRecipientsLambda);
+    recipientsApiResource.addMethod('GET', new LambdaIntegration(getAllRecipientsLambda, lambdaIntegOptions));
 
     // Lambda for our Restful service
     const addDropLambda = new lambda.Function(this, 'HDMDAddDropLambda', {
@@ -79,6 +91,7 @@ export class HumpDayMusicDropCdkStack extends Stack {
       handler: 'index.addDrop',
     });
     dropsTable.grantWriteData(addDropLambda);
+    dropsApiResource.addMethod('PUT', new LambdaIntegration(addDropLambda, lambdaIntegOptions));
 
     // Lambda for our Restful service
     const deleteDropLambda = new lambda.Function(this, 'HDMDDeleteDropLambda', {
@@ -87,6 +100,7 @@ export class HumpDayMusicDropCdkStack extends Stack {
       handler: 'index.deleteDrop',
     });
     dropsTable.grantWriteData(deleteDropLambda);
+    dropsApiResource.addMethod('DELETE', new LambdaIntegration(deleteDropLambda, lambdaIntegOptions));
 
     // Lambda for our Restful service
     const getDropsForMonthLambda = new lambda.Function(this, 'HDMDGetDropsForMonthLambda', {
@@ -95,6 +109,7 @@ export class HumpDayMusicDropCdkStack extends Stack {
       handler: 'index.getDropsForMonth',
     });
     dropsTable.grantReadData(getDropsForMonthLambda);
+    dropsApiResource.addMethod('GET', new LambdaIntegration(getDropsForMonthLambda, lambdaIntegOptions));
 
     // Lambda for our Restful service
     const subscribeLambda = new lambda.Function(this, 'HDMDSubscribeLambda', {
@@ -103,6 +118,7 @@ export class HumpDayMusicDropCdkStack extends Stack {
       handler: 'index.subscribe',
     });
     recipientsTable.grantWriteData(subscribeLambda);
+    recipientsApiResource.addMethod('PUT', new LambdaIntegration(subscribeLambda, lambdaIntegOptions));
 
     // Lambda for our Restful service
     const unsubscribeLambda = new lambda.Function(this, 'HDMDUnsubscribeLambda', {
@@ -111,6 +127,6 @@ export class HumpDayMusicDropCdkStack extends Stack {
       handler: 'index.unsubscribe',
     });
     recipientsTable.grantWriteData(unsubscribeLambda);
-
+    recipientsApiResource.addMethod('DELETE', new LambdaIntegration(unsubscribeLambda, lambdaIntegOptions));
   }
 }
