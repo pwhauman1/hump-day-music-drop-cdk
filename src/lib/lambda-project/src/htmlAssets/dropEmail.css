@@ -1,0 +1,60 @@
+.base {
+    background-color: #FAF3DD;
+}
+
+.center {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.content {
+    width: 99%;
+    max-width: 500px;
+    background-color: #F39237;
+    border-radius: 8px;
+    padding: 0px;
+    font-family: Helvetica;
+    color: #2A1E5C;
+}
+
+b {
+    font-size: 22px;
+}
+
+.paper {
+    width: 92%;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.header {
+    font-size: 4vw;
+}
+
+.footer {
+    font-size: 10px;
+    text-align: center;
+}
+
+.albumCover img {
+    width: 100%;
+    max-width: 350px;
+    height: 100%;
+    display: block;
+}
+
+.albumCover {
+    width: 100%;
+    max-width: 350px;
+}
+
+.spotifyLink {
+    text-align: center;
+}
+
+img.logo {
+    width: 50%;
+    max-height: 50px;
+    max-width: 50px;
+    display: block;
+}

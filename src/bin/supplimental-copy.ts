@@ -9,8 +9,8 @@ const PATH_TO_LAMBDA_PROJECT_OUTDIR = join(PATH_TO_CDK_OURDIR,'lib', 'lambda-pro
 const LAMBDA_NODE_MODULES_SRC_PATH = join(PATH_TO_LAMBDA_PROJECT, 'node_modules');
 const LAMBDA_NODE_MODULES_TARGET_PATH = join(PATH_TO_LAMBDA_PROJECT_OUTDIR, 'node_modules');
 
-const HANLEBARS_TEMPLATES_SRC_PATH = join(PATH_TO_LAMBDA_PROJECT, 'src', 'templates');
-const HANDLEBARS_TEMPLATES_TARGET_PATH = join(PATH_TO_LAMBDA_PROJECT_OUTDIR, 'src', 'templates')
+const HANLEBARS_TEMPLATES_SRC_PATH = join(PATH_TO_LAMBDA_PROJECT, 'src', 'htmlAssets');
+const HANDLEBARS_TEMPLATES_TARGET_PATH = join(PATH_TO_LAMBDA_PROJECT_OUTDIR, 'src', 'htmlAssets')
 
 const nukeTarget = (path: string) => {
     console.log(`[INFO] Nuking ${path}`);

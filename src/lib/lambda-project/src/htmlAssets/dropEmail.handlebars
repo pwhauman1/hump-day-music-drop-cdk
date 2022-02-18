@@ -1,0 +1,56 @@
+<head>
+    {{#if cssSource}}
+    <link rel="stylesheet" href="{{cssSource}}">
+    {{/if}}
+</head>
+
+<body>
+    <div class="base">
+        <div class="content center">
+            <div class="paper center">
+                <div class="header">
+                    <h1 class="title">{{hdmdWelcome}}</h1>
+                </div>
+
+                <div class="albumCover center">
+                    <img src="{{imageUrl}}">
+                </div>
+
+                <div class="albumTitle">
+                    <p><b>{{albumName}}</b> by <b>{{artist}}</b></p>
+                </div>
+
+                {{#if desc}}
+                <div class="albumDescription">
+                    <p>{{desc}}</p>
+                </div>
+                {{/if}}
+
+                {{#if favoriteSong}}
+                <div class="favoriteSong">
+                    <p><b>Favorite Song</b>: {{favoriteSong}}</p>
+                </div>
+                {{/if}}
+
+                {{#if favoriteLyric}}
+                <div class="favoriteLyric">
+                    <p><b>Favorite Lyric</b>: <i>"{{favoriteLyric}}"</i></p>
+                </div>
+                {{/if}}
+
+                <div class="spotifyLink center">
+                    <p>
+                        <a href="{{spotifyUrl}}">Open in spotify</a>
+                    </p>
+                </div>
+
+                <div class="footer">
+                    <img class="logo center" src="https://hdmd-assets.s3.us-west-2.amazonaws.com/logos/HM.png">
+                    <p class="center">
+                        humpday musicdrop 🐪 i do this for fun 🐪 by peter.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

@@ -15,7 +15,7 @@ export const sendJob: Handler = async (event: any, context: any) => {
         const infoMessage = 'No drop to send. Skipping!';
         return makeLambdaBaseResponse({ infoMessage });
     }
-    const html = emailComposer.getHTML(drop);
+    const html = await emailComposer.getHTML(drop);
     try {
         const emailResponses = await emailComposer.sendViaSES(recipients, html);
         const sendEmailRetVals = await Promise.all(emailResponses);

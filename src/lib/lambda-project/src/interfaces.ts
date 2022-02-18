@@ -12,6 +12,7 @@ export interface IDrop {
 
 export interface IDropHTML extends IDrop {
     hdmdWelcome: string,
+    cssSource?: string,
 }
 
 export interface ILambdaResponseContent {

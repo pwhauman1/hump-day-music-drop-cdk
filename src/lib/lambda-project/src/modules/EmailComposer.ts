@@ -5,8 +5,11 @@ import { readFileSync } from 'fs-extra';
 import { resolve } from 'path';
 import * as aws from 'aws-sdk';
 import { MAX_SEND_TO_LENGTH } from '../constants';
+const inlineCss = require('inline-css');
 
-const HTML_TEMPLATE_PATH = resolve('src', 'templates', 'htmlTemplate.handlebars');
+const HTML_TEMPLATE_PATH = resolve('src', 'htmlAssets', 'dropEmail.handlebars');
+const CSS_PATH = resolve('src', 'htmlAssets', 'dropEmail.css');
+// color scheme: https://coolors.co/ee4266-5db7de-2a1e5c-f39237-faf3dd
 
 export class EmailComposer {
     private sesClient: aws.SES;
@@ -21,14 +24,18 @@ export class EmailComposer {
         return EmailComposer.instance;
     }
 
-    public getHTML(drop: IDrop) {
-        console.log('CWD: ' + process.cwd());
+    public async getHTML(drop: IDrop) {
+        console.log('Getting HTML. Current Working Directory: ' + process.cwd());
+        console.log('CSS PATH', CSS_PATH);
         const dropData: IDropHTML = {
             ...drop,
             hdmdWelcome: getRandomWelcome(),
+            cssSource: CSS_PATH,
         }
         const template = Handlebars.compile(readFileSync(HTML_TEMPLATE_PATH).toString());
-        return template(dropData);
+        const html = template(dropData);
+        const htmlWithInline = await inlineCss(html, {url: 'file://'});
+        return htmlWithInline;
     }
 
     public async sendViaSES(recipients: string[], body: string): Promise<Promise<any>[]> {
@@ -61,3 +68,20 @@ export class EmailComposer {
         return promises;
     }
 }
+
+console.log('TESTING EC');
+const ec = EmailComposer.getEmailComposer();
+ec.getHTML({
+    "sendDateKey": 20220207,
+    "albumId": "7G7lPTcJta35qGZ8LMIJ4y",
+    "artist": "Indigo De Souza",
+    "imageUrl": "https://i.scdn.co/image/ab67616d0000b2738be26b6c162ff72ca4666ba6",
+    "favoriteSong": "Pretty Pictures",
+    "albumName": "Any Shape You Take",
+    "spotifyUrl": "https://open.spotify.com/album/7G7lPTcJta35qGZ8LMIJ4y?si=oLRZwz5jT36v8GyS4_I2WQ",
+    "favoriteLyric": "Please! Send! Help! To! Me! *rock drop*",
+    "desc": "A melancholic album that you'll wanna listen to after a Tuesday thrift haul"
+}).then((html) => {
+    console.log('html: ');
+    console.log(html);
+});
