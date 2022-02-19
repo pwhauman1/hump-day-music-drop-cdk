@@ -34,6 +34,11 @@ export const makeLambdaBaseResponse = (content: ILambdaResponseContent): ILambda
   }
   const retVal: ILambdaOutputFormatForProxy = {
     body: JSON.stringify(lambdaBody),
+    headers: {
+      "Access-Control-Allow-Headers" : "Content-Type",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "OPTIONS,POST,GET,DELETE,PUT"
+    },
     statusCode: 200,
     isBase64Encoded: false,
   }

@@ -27,7 +27,9 @@ export interface ILambdaResponseBody {
 export interface ILambdaOutputFormatForProxy {
     isBase64Encoded?: boolean,
     statusCode: number,
-    headers?: string[],
+    headers?: {
+        [header: string]: string
+    },
     multiValueHeaders?: {
         [mvh: string]: string[]
     },

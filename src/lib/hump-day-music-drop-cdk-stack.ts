@@ -7,7 +7,7 @@ import { DROPS_TABLE, RECIPIENTS_TABLE, SENDER_JOB_LAMBDA_NAME } from '../consta
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
-import { RestApi, LambdaIntegration, LambdaIntegrationOptions} from 'aws-cdk-lib/aws-apigateway';
+import { RestApi, LambdaIntegration, LambdaIntegrationOptions, Cors } from 'aws-cdk-lib/aws-apigateway';
 
 export class HumpDayMusicDropCdkStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -66,7 +66,12 @@ export class HumpDayMusicDropCdkStack extends Stack {
     });
 
     // API gateway and resources we attach our methods to
-    const api = new RestApi(this, 'HDMD-api');
+    const api = new RestApi(this, 'HDMD-api', {
+      defaultCorsPreflightOptions: {
+        allowMethods: Cors.ALL_METHODS,
+        allowOrigins: Cors.ALL_ORIGINS,
+      }
+    });
     const recipientsApiResource = api.root.addResource('recipients');
     const dropsApiResource = api.root.addResource('drops');
 
