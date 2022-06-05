@@ -1,9 +1,11 @@
-import { Stack, StackProps } from 'aws-cdk-lib';
+import { RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as ddb from 'aws-cdk-lib/aws-dynamodb';
+import * as s3 from 'aws-cdk-lib/aws-s3'
+import * as s3Deployment from 'aws-cdk-lib/aws-s3-deployment'
 import * as path from 'path';
-import { DROPS_TABLE, RECIPIENTS_TABLE, SENDER_JOB_LAMBDA_NAME } from '../constants';
+import { DROPS_TABLE, HDMD_PATH_TO_WEB, RECIPIENTS_TABLE, S3_BUCKET, SENDER_JOB_LAMBDA_NAME } from '../constants';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
@@ -35,6 +37,21 @@ export class HumpDayMusicDropCdkStack extends Stack {
         type: ddb.AttributeType.STRING,
       }
     });
+
+    // S3 bucket to host static assets
+    const webBucket = new s3.Bucket(this, S3_BUCKET, {
+      publicReadAccess: true,
+      removalPolicy: RemovalPolicy.DESTROY,
+      websiteIndexDocument: 'index.html',
+      websiteErrorDocument: 'index.html',
+    });
+
+    const hdmdAssetPath = process.env[HDMD_PATH_TO_WEB];
+    if (!hdmdAssetPath) throw new Error('Oops, HDMD_PATH_TO_WEB doesn\'t exist');
+    const deployment = new s3Deployment.BucketDeployment(this, "deployStaticWebsite", {
+      sources: [s3Deployment.Source.asset(hdmdAssetPath)],
+      destinationBucket: webBucket
+   });
 
     // Lambda that will invoke SES to send an email to everyone subscribed
     const sendJobLambda = new lambda.Function(this, SENDER_JOB_LAMBDA_NAME, {
