@@ -38,7 +38,7 @@ export class EmailComposer {
         return htmlWithInline;
     }
 
-    public async sendViaSES(recipients: string[], body: string): Promise<Promise<any>[]> {
+    public async sendViaSES(recipients: string[], body: string, subject?: string): Promise<Promise<any>[]> {
         const paginatedRecipients = paginate(recipients, MAX_SEND_TO_LENGTH);
         console.log('[INFO] Pagenated Results', paginatedRecipients);
         const promises: Promise<any>[] = [];
@@ -55,7 +55,7 @@ export class EmailComposer {
                 },
                 Subject: {
                     Charset: "UTF-8",
-                    Data: "HUMP DAY MUSIC DROP"
+                    Data: subject ? subject : "HUMP DAY MUSIC DROP"
                 }
             },
             Source: "humpday.musicdrop@gmail.com",

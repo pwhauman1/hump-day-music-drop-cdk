@@ -10,10 +10,11 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
-        "typescript": "^4.5.5"
+        "typescript": "^4.7.3"
     },
     "dependencies": {
         "@types/inline-css": "^3.0.1",
+        "aws-cdk-lib": "^2.27.0",
         "aws-sdk": "^2.1069.0",
         "fs-extra": "^10.0.0",
         "handlebars": "^4.7.7",

@@ -4,6 +4,8 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as ddb from 'aws-cdk-lib/aws-dynamodb';
 import * as s3 from 'aws-cdk-lib/aws-s3'
 import * as s3Deployment from 'aws-cdk-lib/aws-s3-deployment'
+import * as sns from 'aws-cdk-lib/aws-sns';
+import * as subscriptions from 'aws-cdk-lib/aws-sns-subscriptions';
 import * as path from 'path';
 import { DROPS_TABLE, HDMD_PATH_TO_WEB, RECIPIENTS_TABLE, S3_BUCKET, SENDER_JOB_LAMBDA_NAME } from '../constants';
 import * as iam from 'aws-cdk-lib/aws-iam';
@@ -51,7 +53,25 @@ export class HumpDayMusicDropCdkStack extends Stack {
     const deployment = new s3Deployment.BucketDeployment(this, "deployStaticWebsite", {
       sources: [s3Deployment.Source.asset(hdmdAssetPath)],
       destinationBucket: webBucket
-   });
+    });
+
+    // SNS topic for complaints and bounces
+    const poorExperienceTopic = new sns.Topic(this, 'HDMD_PoorExperienceTopic', {
+      fifo: false,
+      topicName: 'HDMD_PoorExperienceTopic',
+    });
+
+
+    // Lambda for our Restful service
+    const poorExperienceLambda = new lambda.Function(this, 'HDMDPoorExperienceLambda', {
+      runtime: lambda.Runtime.NODEJS_12_X,
+      code: lambda.Code.fromAsset(path.join(__dirname, './lambda-project')),
+      handler: 'index.handlePoorExperience',
+    });
+
+    const poorExperienceSubscription = new subscriptions.LambdaSubscription(poorExperienceLambda);
+
+    poorExperienceTopic.addSubscription(poorExperienceSubscription);
 
     // Lambda that will invoke SES to send an email to everyone subscribed
     const sendJobLambda = new lambda.Function(this, SENDER_JOB_LAMBDA_NAME, {
@@ -68,7 +88,7 @@ export class HumpDayMusicDropCdkStack extends Stack {
     });
 
     if (!sendJobLambda.role) throw new Error('Send Job Lambda does not have a role');
-    sendJobLambda.role.attachInlinePolicy(sendEmailPermissions)
+    sendJobLambda.role.attachInlinePolicy(sendEmailPermissions);
 
     recipientsTable.grantReadData(sendJobLambda);
     dropsTable.grantReadData(sendJobLambda);
